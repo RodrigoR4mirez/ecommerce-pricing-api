@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ecommerce-pricing-api
+  datasource:
+    url: jdbc:h2:mem:pricingdb;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080
+
+api:
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
