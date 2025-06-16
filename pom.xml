@@ -85,6 +85,12 @@
                             <version>1.5.5.Final</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                        <arg>-Amapstruct.defaultInjectionStrategy=constructor</arg>
+                        <arg>-Amapstruct.unmappedTargetPolicy=IGNORE</arg>
+                        <arg>-Amapstruct.verbose=true</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

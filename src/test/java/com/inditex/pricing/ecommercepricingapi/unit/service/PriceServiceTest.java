@@ -1,7 +1,8 @@
-package com.inditex.pricing.ecommercepricingapi.application.service;
+package com.inditex.pricing.ecommercepricingapi.unit.service;
 
 import com.inditex.pricing.ecommercepricingapi.application.ports.input.PriceServicePort;
 import com.inditex.pricing.ecommercepricingapi.application.ports.output.PricePersistencePort;
+import com.inditex.pricing.ecommercepricingapi.application.service.PriceService;
 import com.inditex.pricing.ecommercepricingapi.domain.exception.PriceNotFoundException;
 import com.inditex.pricing.ecommercepricingapi.domain.model.Price;
 import com.inditex.pricing.ecommercepricingapi.utils.Constants;

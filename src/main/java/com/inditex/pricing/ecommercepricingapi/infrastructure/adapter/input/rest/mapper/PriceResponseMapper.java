@@ -3,6 +3,7 @@ package com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.res
 import com.inditex.pricing.ecommercepricingapi.domain.model.Price;
 import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.model.PriceResponse;
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * Interfaz para mapear entidades de dominio Price a DTOs PriceResponse.
  */
+@Component
 @Mapper(componentModel = "spring")
 public interface PriceResponseMapper {
 

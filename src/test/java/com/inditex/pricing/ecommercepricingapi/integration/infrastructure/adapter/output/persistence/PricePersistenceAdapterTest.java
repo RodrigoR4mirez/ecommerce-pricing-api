@@ -1,7 +1,8 @@
-package com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.output.persistence;
+package com.inditex.pricing.ecommercepricingapi.integration.infrastructure.adapter.output.persistence;
 
 import com.inditex.pricing.ecommercepricingapi.application.ports.output.PricePersistencePort;
 import com.inditex.pricing.ecommercepricingapi.domain.model.Price;
+import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.output.persistence.PricePersistenceAdapter;
 import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.output.persistence.mapper.PersistenceMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

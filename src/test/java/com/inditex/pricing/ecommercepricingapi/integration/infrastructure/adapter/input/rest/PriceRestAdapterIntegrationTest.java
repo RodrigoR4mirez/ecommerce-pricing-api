@@ -1,16 +1,19 @@
-package com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest;
+package com.inditex.pricing.ecommercepricingapi.integration.infrastructure.adapter.input.rest;
 
 import com.inditex.pricing.ecommercepricingapi.application.ports.input.PriceServicePort;
 import com.inditex.pricing.ecommercepricingapi.domain.exception.PriceNotFoundException;
 import com.inditex.pricing.ecommercepricingapi.domain.model.Price;
+import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.PriceRestAdapter;
+import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.mapper.PriceResponseMapper;
+import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.model.PriceResponse;
 import com.inditex.pricing.ecommercepricingapi.utils.Constants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -19,14 +22,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(PriceRestAdapter.class)
+@Import(com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.mapper.MapperConfig.class)
 class PriceRestAdapterIntegrationTest {
 
   @Autowired
@@ -35,11 +40,27 @@ class PriceRestAdapterIntegrationTest {
   @MockBean
   private PriceServicePort priceServicePort;
 
+  @MockBean
+  private PriceResponseMapper priceResponseMapper;
+
   private static final DateTimeFormatter formatter = DateTimeFormatter
       .ofPattern(Constants.DATE_TIME_PATTERN);
 
   @BeforeEach
   void setUp() {
+    // Configure priceResponseMapper mock
+    when(priceResponseMapper.toResponse(any(Price.class))).thenAnswer(invocation -> {
+      Price price = invocation.getArgument(0);
+      return new PriceResponse(price.productId(), price.brandId(), price.startDate(), price.endDate(), price.price());
+    });
+
+    when(priceResponseMapper.toResponseList(anyList())).thenAnswer(invocation -> {
+      List<Price> prices = invocation.getArgument(0);
+      return prices.stream()
+          .map(price -> new PriceResponse(price.productId(), price.brandId(), price.startDate(), price.endDate(), price.price()))
+          .collect(java.util.stream.Collectors.toList());
+    });
+
     // Test 1: 2020-06-14 10:00
     when(priceServicePort.getPrice(1L, 35455L,
         LocalDateTime.parse("2020-06-14T10:00:00", formatter)))

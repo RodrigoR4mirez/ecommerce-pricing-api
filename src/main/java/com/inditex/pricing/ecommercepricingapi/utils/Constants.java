@@ -48,11 +48,11 @@ public final class Constants {
 
   // JPA query and parameters
   public static final String QUERY_FIND_APPLICABLE_PRICES =
-      "SELECT p FROM PriceJpaEntity p WHERE p.brandId = :brandId AND "
+      "SELECT p FROM PriceEntity p WHERE p.brandId = :brandId AND "
       + "p.productId = :productId " + "AND :applicationDate BETWEEN "
       + "p.startDate AND p.endDate ORDER BY p.priority DESC";
   public static final String QUERY_FIND_ALL_PRICES =
-      "SELECT p FROM PriceJpaEntity p WHERE p.brandId = "
+      "SELECT p FROM PriceEntity p WHERE p.brandId = "
       + ":brandId AND p.productId = :productId ORDER BY p.startDate";
   public static final String PARAM_BRAND_ID = "brandId";
   public static final String PARAM_PRODUCT_ID = "productId";
