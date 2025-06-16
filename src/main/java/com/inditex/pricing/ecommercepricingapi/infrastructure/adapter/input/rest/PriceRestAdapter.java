@@ -20,6 +20,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
@@ -44,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
+@Tag(name = "Prices", description = "Operaciones relacionadas con los precios de productos")
 public class PriceRestAdapter {
 
   private final PriceServicePort priceServicePort;
@@ -58,7 +61,10 @@ public class PriceRestAdapter {
    * @return respuesta con el precio encontrado
    */
   @GetMapping(params = PARAM_APPLICATION_DATE)
-  @Operation(summary = "Obtiene el precio aplicable a una fecha")
+  @Operation(
+      operationId = "getPriceByDate",
+      summary = "Obtiene el precio aplicable a una fecha",
+      description = "Devuelve el precio que debe aplicarse al producto indicado en la fecha proporcionada")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Precio encontrado",
           content = @Content(schema = @Schema(implementation = PriceResponse.class))),
@@ -69,8 +75,11 @@ public class PriceRestAdapter {
       @ApiResponse(responseCode = "500", description = "Error interno del servidor",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
   public EntityModel<PriceResponse> getPrice(
+      @Parameter(description = "Identificador de la marca")
       @PathVariable @Positive(message = VAL_BRAND_ID_POSITIVE) Long brandId,
+      @Parameter(description = "Identificador del producto")
       @PathVariable @Positive(message = VAL_PRODUCT_ID_POSITIVE) Long productId,
+      @Parameter(description = "Fecha y hora de aplicación del precio", example = "2020-06-14T10:00:00")
       @RequestParam @NotNull(message = VAL_APPLICATION_DATE_NOTNULL)
       @ValidDateTime String applicationDate) {
 
@@ -94,8 +103,11 @@ public class PriceRestAdapter {
    * @param productId identificador del producto
    * @return colección de precios
    */
-  @GetMapping
-  @Operation(summary = "Lista los precios disponibles para un producto")
+  @GetMapping("/all-prices")
+  @Operation(
+      operationId = "listProductPrices",
+      summary = "Lista los precios disponibles para un producto",
+      description = "Recupera todos los precios configurados para el producto y la marca especificados")
   @ApiResponses({
       @ApiResponse(responseCode = "200", description = "Precios encontrados",
           content = @Content(array = @ArraySchema(schema = @Schema(implementation = PriceResponse.class)))),
@@ -106,7 +118,9 @@ public class PriceRestAdapter {
       @ApiResponse(responseCode = "500", description = "Error interno del servidor",
           content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
   public CollectionModel<PriceResponse> getAllPrices(
+      @Parameter(description = "Identificador de la marca")
       @PathVariable @Positive(message = VAL_BRAND_ID_POSITIVE) Long brandId,
+      @Parameter(description = "Identificador del producto")
       @PathVariable @Positive(message = VAL_PRODUCT_ID_POSITIVE) Long productId) {
 
     log.info(Constants.LOG_REQUEST_PRICES, brandId, productId);
