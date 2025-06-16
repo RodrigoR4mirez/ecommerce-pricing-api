@@ -13,7 +13,11 @@ import com.inditex.pricing.ecommercepricingapi.domain.model.Price;
 import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.model.PriceResponse;
 import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.mapper.PriceResponseMapper;
 import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.validation.ValidDateTime;
+import com.inditex.pricing.ecommercepricingapi.domain.model.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
@@ -55,10 +59,15 @@ public class PriceRestAdapter {
    */
   @GetMapping(params = PARAM_APPLICATION_DATE)
   @Operation(summary = "Obtiene el precio aplicable a una fecha")
-  @ApiResponses({@ApiResponse(responseCode = "200", description = "Precio encontrado"),
-      @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
-      @ApiResponse(responseCode = "404", description = "Precio no encontrado"),
-      @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Precio encontrado",
+          content = @Content(schema = @Schema(implementation = PriceResponse.class))),
+      @ApiResponse(responseCode = "400", description = "Solicitud inválida",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      @ApiResponse(responseCode = "404", description = "Precio no encontrado",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
   public EntityModel<PriceResponse> getPrice(
       @PathVariable @Positive(message = VAL_BRAND_ID_POSITIVE) Long brandId,
       @PathVariable @Positive(message = VAL_PRODUCT_ID_POSITIVE) Long productId,
@@ -87,10 +96,15 @@ public class PriceRestAdapter {
    */
   @GetMapping
   @Operation(summary = "Lista los precios disponibles para un producto")
-  @ApiResponses({@ApiResponse(responseCode = "200", description = "Precios encontrados"),
-      @ApiResponse(responseCode = "404", description = "Precios no encontrados"),
-      @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
-      @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", description = "Precios encontrados",
+          content = @Content(array = @ArraySchema(schema = @Schema(implementation = PriceResponse.class)))),
+      @ApiResponse(responseCode = "404", description = "Precios no encontrados",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      @ApiResponse(responseCode = "400", description = "Solicitud inválida",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      @ApiResponse(responseCode = "500", description = "Error interno del servidor",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
   public CollectionModel<PriceResponse> getPrices(
       @PathVariable @Positive(message = VAL_BRAND_ID_POSITIVE) Long brandId,
       @PathVariable @Positive(message = VAL_PRODUCT_ID_POSITIVE) Long productId) {
