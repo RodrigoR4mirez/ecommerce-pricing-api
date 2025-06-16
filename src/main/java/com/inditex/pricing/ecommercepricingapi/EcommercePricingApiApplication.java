@@ -9,14 +9,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class EcommercePricingApiApplication {
 
-    /**
-     * Método principal que inicia la aplicación.
-     *
-     * @param args argumentos de la línea de comandos
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(EcommercePricingApiApplication.class, args);
+  /**
+   * Método principal que inicia la aplicación.
+   *
+   * @param args argumentos de la línea de comandos
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(EcommercePricingApiApplication.class, args);
 
-    }
+  }
 
 }
