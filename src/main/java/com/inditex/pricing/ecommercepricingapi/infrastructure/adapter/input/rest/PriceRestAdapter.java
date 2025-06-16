@@ -1,5 +1,6 @@
 package com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest;
 
+import static com.inditex.pricing.ecommercepricingapi.utils.Constants.PATH_ALL_PRICES;
 import static com.inditex.pricing.ecommercepricingapi.utils.Constants.DATE_TIME_PATTERN;
 import static com.inditex.pricing.ecommercepricingapi.utils.Constants.PARAM_APPLICATION_DATE;
 import static com.inditex.pricing.ecommercepricingapi.utils.Constants.PATH_PRICES;
@@ -42,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
  * Controlador REST encargado de exponer el servicio de consulta de precios.
  */
 @RestController
-@RequestMapping(PATH_PRICES)
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -60,7 +60,8 @@ public class PriceRestAdapter {
    * @param applicationDate fecha de aplicación del precio
    * @return respuesta con el precio encontrado
    */
-  @GetMapping(params = PARAM_APPLICATION_DATE)
+  @GetMapping(path = PATH_PRICES,
+      params = PARAM_APPLICATION_DATE)
   @Operation(
       operationId = "getPriceByDate",
       summary = "Obtiene el precio aplicable a una fecha",
@@ -103,7 +104,7 @@ public class PriceRestAdapter {
    * @param productId identificador del producto
    * @return colección de precios
    */
-  @GetMapping("/all-prices")
+  @GetMapping(PATH_ALL_PRICES)
   @Operation(
       operationId = "listProductPrices",
       summary = "Lista los precios disponibles para un producto",

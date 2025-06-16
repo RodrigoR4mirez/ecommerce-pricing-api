@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.inditex.pricing.ecommercepricingapi.utils.Constants.PATH_ALL_PRICES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -196,7 +197,7 @@ class PriceRestAdapterIntegrationTest {
   @Test
   @DisplayName("List all prices")
   void listAllPrices() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 35455))
+    mockMvc.perform(get(PATH_ALL_PRICES, 1, 35455))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$._embedded.priceResponseList").isArray())
         .andExpect(jsonPath("$._embedded.priceResponseList.length()")
@@ -207,7 +208,7 @@ class PriceRestAdapterIntegrationTest {
   @Test
   @DisplayName("List not found returns 404")
   void listNotFound() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 99999))
+    mockMvc.perform(get(PATH_ALL_PRICES, 1, 99999))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.message").value(Constants.RESOURCE_NOT_FOUND))
         .andExpect(jsonPath("$.details[0]").value(Constants.PRICE_NOT_FOUND));

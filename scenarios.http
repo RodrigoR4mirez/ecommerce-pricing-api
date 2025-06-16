@@ -22,4 +22,4 @@ Accept: application/json
 
 
 ### Prices
-GET {{host}}/brands/1/products/35455/prices
+GET {{host}}/brands/1/products/35455/all-prices

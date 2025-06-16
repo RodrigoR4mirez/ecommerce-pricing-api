@@ -4,11 +4,13 @@ package com.inditex.pricing.ecommercepricingapi.utils;
  * Contiene valores constantes utilizados en toda la aplicación.
  */
 public final class Constants {
+
   private Constants() {
   }
 
-  public static final String PATH_PRICES = "/brands/{brandId}/products/{productId}/prices";
-
+  public static final String PATH = "/brands/{brandId}/products/{productId}";
+  public static final String PATH_PRICES = PATH + "/prices";
+  public static final String PATH_ALL_PRICES = PATH + "/all-prices";
   // Log messages
   public static final String LOG_FETCH_PRICE = "Fetching price for brandId={} productId={} date={}";
   public static final String LOG_REQUEST_PRICE =
