@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.ExternalDocumentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +31,13 @@ public class OpenApiConfig {
         .info(new Info()
             .title("Ecommerce Pricing API")
             .version("1.0.0")
-            .description("API for retrieving applicable product prices")
+            .description("API para consultar los precios aplicables a los productos")
+            .termsOfService("https://example.com/terms")
             .contact(new Contact().name("Pricing Team").email("pricing@example.com"))
             .license(new License().name("Apache 2.0")
-                .url("https://www.apache.org/licenses/LICENSE-2.0")));
+                .url("https://www.apache.org/licenses/LICENSE-2.0")))
+        .externalDocs(new ExternalDocumentation()
+            .description("Project documentation")
+            .url("https://github.com/inditex/pricing-api"));
   }
 }
