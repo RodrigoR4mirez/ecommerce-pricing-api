@@ -16,10 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.inditex.pricing.ecommercepricingapi.utils.Constants.PATH_ALL_PRICES;
@@ -33,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PriceRestAdapter.class)
 @Import(com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest.mapper.MapperConfig.class)
-class PriceRestAdapterIntegrationTest {
+class PriceRestAdapterIntegrationErrorTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -62,147 +60,11 @@ class PriceRestAdapterIntegrationTest {
           .collect(java.util.stream.Collectors.toList());
     });
 
-    // Test 1: 2020-06-14 10:00
-    when(priceServicePort.getPrice(1L, 35455L,
-        LocalDateTime.parse("2020-06-14T10:00:00", formatter)))
-        .thenReturn(new Price(1L,
-            LocalDateTime.parse("2020-06-14T00:00:00", formatter),
-            LocalDateTime.parse("2020-12-31T23:59:59", formatter),
-            1L, 35455L, 0, new BigDecimal("35.50"),
-            "EUR"));
-
-    // Test 2: 2020-06-14 16:00
-    when(priceServicePort.getPrice(1L, 35455L,
-        LocalDateTime.parse("2020-06-14T16:00:00", formatter)))
-        .thenReturn(new Price(1L,
-            LocalDateTime.parse("2020-06-14T15:00:00", formatter),
-            LocalDateTime.parse("2020-06-14T18:30:00", formatter),
-            2L, 35455L, 1,
-            new BigDecimal("25.45"), "EUR"));
-
-    // Test 3: 2020-06-14 21:00
-    when(priceServicePort.getPrice(1L, 35455L,
-        LocalDateTime.parse("2020-06-14T21:00:00", formatter)))
-        .thenReturn(new Price(1L,
-            LocalDateTime.parse("2020-06-14T00:00:00", formatter),
-            LocalDateTime.parse("2020-12-31T23:59:59", formatter),
-            1L, 35455L, 0,
-            new BigDecimal("35.50"), "EUR"));
-
-    // Test 4: 2020-06-15 10:00
-    when(priceServicePort.getPrice(1L, 35455L,
-        LocalDateTime.parse("2020-06-15T10:00:00", formatter)))
-        .thenReturn(new Price(1L,
-            LocalDateTime.parse("2020-06-15T00:00:00", formatter),
-            LocalDateTime.parse("2020-06-15T11:00:00", formatter),
-            3L, 35455L, 1,
-            new BigDecimal("30.50"), "EUR"));
-
-    // Test 5: 2020-06-16 21:00
-    when(priceServicePort.getPrice(1L, 35455L,
-        LocalDateTime.parse("2020-06-16T21:00:00", formatter)))
-        .thenReturn(new Price(1L,
-            LocalDateTime.parse("2020-06-15T16:00:00", formatter),
-            LocalDateTime.parse("2020-12-31T23:59:59", formatter),
-            4L, 35455L, 1,
-            new BigDecimal("38.95"), "EUR"));
-
-    // List all prices
-    List<Price> allPrices = Arrays.asList(
-        new Price(1L,
-            LocalDateTime.parse("2020-06-14T00:00:00", formatter),
-            LocalDateTime.parse("2020-12-31T23:59:59", formatter),
-            1L, 35455L, 0,
-            new BigDecimal("35.50"), "EUR"),
-        new Price(1L,
-            LocalDateTime.parse("2020-06-14T15:00:00", formatter),
-            LocalDateTime.parse("2020-06-14T18:30:00", formatter),
-            2L, 35455L, 1,
-            new BigDecimal("25.45"), "EUR"),
-        new Price(1L,
-            LocalDateTime.parse("2020-06-15T00:00:00", formatter),
-            LocalDateTime.parse("2020-06-15T11:00:00", formatter),
-            3L, 35455L, 1,
-            new BigDecimal("30.50"), "EUR"),
-        new Price(1L,
-            LocalDateTime.parse("2020-06-15T16:00:00", formatter),
-            LocalDateTime.parse("2020-12-31T23:59:59", formatter),
-            4L, 35455L, 1,
-            new BigDecimal("38.95"), "EUR")
-    );
-    when(priceServicePort.getPrices(1L, 35455L)).thenReturn(allPrices);
-
     when(priceServicePort.getPrices(1L, 99999L))
         .thenThrow(new PriceNotFoundException());
     when(priceServicePort.getPrice(1L, 99999L,
         LocalDateTime.parse("2020-06-14T10:00:00", formatter)))
         .thenThrow(new PriceNotFoundException());
-  }
-
-  @Test
-  @DisplayName("Test 1: 2020-06-14 10:00")
-  void test1() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 35455)
-            .param(Constants.PARAM_APPLICATION_DATE, "2020-06-14T10:00:00"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.price").value(35.50))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$._links.prices.href").exists());
-  }
-
-  @Test
-  @DisplayName("Test 2: 2020-06-14 16:00")
-  void test2() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 35455)
-            .param(Constants.PARAM_APPLICATION_DATE, "2020-06-14T16:00:00"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.price").value(25.45))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$._links.prices.href").exists());
-  }
-
-  @Test
-  @DisplayName("Test 3: 2020-06-14 21:00")
-  void test3() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 35455)
-            .param(Constants.PARAM_APPLICATION_DATE, "2020-06-14T21:00:00"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.price").value(35.50))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$._links.prices.href").exists());
-  }
-
-  @Test
-  @DisplayName("Test 4: 2020-06-15 10:00")
-  void test4() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 35455)
-            .param(Constants.PARAM_APPLICATION_DATE, "2020-06-15T10:00:00"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.price").value(30.50))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$._links.prices.href").exists());
-  }
-
-  @Test
-  @DisplayName("Test 5: 2020-06-16 21:00")
-  void test5() throws Exception {
-    mockMvc.perform(get(Constants.PATH_PRICES, 1, 35455)
-            .param(Constants.PARAM_APPLICATION_DATE, "2020-06-16T21:00:00"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.price").value(38.95))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$._links.prices.href").exists());
-  }
-
-  @Test
-  @DisplayName("List all prices")
-  void listAllPrices() throws Exception {
-    mockMvc.perform(get(PATH_ALL_PRICES, 1, 35455))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$._embedded.priceResponseList").isArray())
-        .andExpect(jsonPath("$._embedded.priceResponseList.length()")
-            .value(4))
-        .andExpect(jsonPath("$._links.self.href").exists());
   }
 
   @Test
