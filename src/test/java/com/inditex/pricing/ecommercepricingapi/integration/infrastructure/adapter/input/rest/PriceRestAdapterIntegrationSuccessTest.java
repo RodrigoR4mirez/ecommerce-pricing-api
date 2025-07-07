@@ -4,6 +4,7 @@ import com.inditex.pricing.ecommercepricingapi.infrastructure.adapter.input.rest
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,6 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.hateoas.EntityModel;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Pruebas de integración que validan los cinco escenarios de ejemplo
+ * utilizando el endpoint REST real sin mocks.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PriceRestAdapterIntegrationSuccessTest {
 
@@ -23,19 +28,28 @@ class PriceRestAdapterIntegrationSuccessTest {
     @Autowired
     TestRestTemplate restTemplate;
 
+    /**
+     * Realiza una llamada al endpoint de precios para un producto concreto.
+     *
+     * @param date fecha y hora de consulta en formato ISO-8601
+     * @return respuesta deserializada del servicio
+     */
     private PriceResponse getPrice(String date) {
-        String url = String.format("http://localhost:%d/brands/1/products/35455/prices?applicationDate=%s", port, date);
+        String url = String.format(
+            "http://localhost:%d/brands/1/products/35455/prices?applicationDate=%s",
+            port, date);
         ResponseEntity<EntityModel<PriceResponse>> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {});
+            url,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<>() {});
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         return response.getBody().getContent();
     }
 
     @Test
-    void testScenario1() {
+    @DisplayName("Escenario 1: petición a las 10:00 del 14/06/2020")
+    void shouldReturnBasePriceAtMorningOfJune14() {
         PriceResponse price = getPrice("2020-06-14T10:00:00");
         assertThat(price).isNotNull();
         assertThat(price.productId()).isEqualTo(35455L);
@@ -46,7 +60,8 @@ class PriceRestAdapterIntegrationSuccessTest {
     }
 
     @Test
-    void testScenario2() {
+    @DisplayName("Escenario 2: petición a las 16:00 del 14/06/2020")
+    void shouldReturnPromoPriceAtAfternoonOfJune14() {
         PriceResponse price = getPrice("2020-06-14T16:00:00");
         assertThat(price).isNotNull();
         assertThat(price.productId()).isEqualTo(35455L);
@@ -57,7 +72,8 @@ class PriceRestAdapterIntegrationSuccessTest {
     }
 
     @Test
-    void testScenario3() {
+    @DisplayName("Escenario 3: petición a las 21:00 del 14/06/2020")
+    void shouldReturnBasePriceAtNightOfJune14() {
         PriceResponse price = getPrice("2020-06-14T21:00:00");
         assertThat(price).isNotNull();
         assertThat(price.productId()).isEqualTo(35455L);
@@ -68,7 +84,8 @@ class PriceRestAdapterIntegrationSuccessTest {
     }
 
     @Test
-    void testScenario4() {
+    @DisplayName("Escenario 4: petición a las 10:00 del 15/06/2020")
+    void shouldReturnMorningPriceOfJune15() {
         PriceResponse price = getPrice("2020-06-15T10:00:00");
         assertThat(price).isNotNull();
         assertThat(price.productId()).isEqualTo(35455L);
@@ -79,7 +96,8 @@ class PriceRestAdapterIntegrationSuccessTest {
     }
 
     @Test
-    void testScenario5() {
+    @DisplayName("Escenario 5: petición a las 21:00 del 16/06/2020")
+    void shouldReturnLatePriceOfJune16() {
         PriceResponse price = getPrice("2020-06-16T21:00:00");
         assertThat(price).isNotNull();
         assertThat(price.productId()).isEqualTo(35455L);
