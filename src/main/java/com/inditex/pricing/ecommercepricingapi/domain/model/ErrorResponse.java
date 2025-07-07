@@ -6,9 +6,8 @@ import java.util.List;
 /**
  * DTO utilizado para devolver los errores de forma consistente.
  */
-@Schema(description = "Estructura de la respuesta de error")
 public record ErrorResponse(
-    @Schema(description = "Código HTTP del error") String code,
-    @Schema(description = "Mensaje resumido del error") String message,
-    @Schema(description = "Listado de detalles adicionales") List<String> details) {
+    String code,
+    String message,
+    List<String> details) {
 }
